@@ -79,8 +79,8 @@ class MealPlanner extends Component
     {
         $this->availableRecipes = Recipe::where('user_id', auth()->id())
             ->when($this->recipeSearch, function ($query) {
-                $query->where('name', 'like', '%' . $this->recipeSearch . '%')
-                    ->orWhere('description', 'like', '%' . $this->recipeSearch . '%');
+                $query->where('name', 'like', '%'.$this->recipeSearch.'%')
+                    ->orWhere('description', 'like', '%'.$this->recipeSearch.'%');
             })
             ->orderBy('name')
             ->limit(20)
@@ -100,8 +100,6 @@ class MealPlanner extends Component
         $this->recipeSearch = '';
         $this->loadAvailableRecipes();
         $this->showMealModal = true;
-
-        $this->dispatch('open-modal', 'meal-update');
     }
 
     public function closeMealModal()
@@ -111,8 +109,6 @@ class MealPlanner extends Component
         $this->selectedMealType = null;
         $this->selectedMealPlan = null;
         $this->recipeSearch = '';
-
-        $this->dispatch('close-modal', 'meal-update');
     }
 
     public function assignRecipe($recipeId)

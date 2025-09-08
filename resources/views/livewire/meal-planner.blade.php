@@ -74,7 +74,7 @@
                         @else
                             <div
                                 class="bg-zinc-50 border-2 border-dashed border-zinc-200 rounded p-2 text-xs text-zinc-400 text-center cursor-pointer hover:bg-zinc-100 transition-colors"
-                                wire:click="openMealModal('{{ $dateString }}', 'lunch')"
+                                wire:click="openMealModal('{{ $dateString }}', 'lunch', null)"
                             >
                                 + Add meal
                             </div>
@@ -111,7 +111,7 @@
     </div>
 
     <!-- Meal Update Modal -->
-    <flux:modal name="meal-update" class="max-w-2xl">
+    <flux:modal wire:model="showMealModal" class="max-w-2xl">
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
                     <flux:heading size="lg">
@@ -120,9 +120,7 @@
                             - {{ \Carbon\Carbon::parse($selectedDate)->format('M j') }}
                         @endif
                     </flux:heading>
-                    <flux:modal.close>
-                        <flux:button variant="ghost" icon="x-mark" size="sm" wire:click="closeMealModal"></flux:button>
-                    </flux:modal.close>
+                    <flux:button variant="ghost" icon="x-mark" size="sm" wire:click="closeMealModal"></flux:button>
                 </div>
 
                 <!-- Search Bar -->
@@ -186,9 +184,7 @@
                         @endif
                     </div>
                     <div class="flex space-x-3">
-                        <flux:modal.close>
-                            <flux:button variant="ghost" wire:click="closeMealModal">Cancel</flux:button>
-                        </flux:modal.close>
+                        <flux:button variant="ghost" wire:click="closeMealModal">Cancel</flux:button>
                     </div>
                 </div>
             </div>
