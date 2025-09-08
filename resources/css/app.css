@@ -1,0 +1,79 @@
+@import 'tailwindcss';
+@import '../../vendor/livewire/flux/dist/flux.css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-zinc-50: #f8f9fa;
+    --color-zinc-100: #e9ecef;
+    --color-zinc-200: #dee2e6;
+    --color-zinc-300: #ced4da;
+    --color-zinc-400: #6c757d;
+    --color-zinc-500: #495057;
+    --color-zinc-600: #343a40;
+    --color-zinc-700: #212529;
+    --color-zinc-800: #1a1d20;
+    --color-zinc-900: #0f1114;
+    --color-zinc-950: #050607;
+
+    /* Green color palette based on #177245 */
+    --color-green-50: #f0f9f4;
+    --color-green-100: #dcf4e3;
+    --color-green-200: #b8e8c7;
+    --color-green-300: #8dd5a3;
+    --color-green-400: #5bb97b;
+    --color-green-500: #177245;
+    --color-green-600: #145a38;
+    --color-green-700: #11472b;
+    --color-green-800: #0d341f;
+    --color-green-900: #082114;
+    --color-green-950: #041109;
+
+    --color-accent: var(--color-green-500);
+    --color-accent-content: var(--color-green-500);
+    --color-accent-foreground: var(--color-white);
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-green-400);
+        --color-accent-content: var(--color-green-400);
+        --color-accent-foreground: var(--color-zinc-800);
+    }
+}
+
+@layer base {
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-zinc-200, currentColor);
+    }
+}
+
+[data-flux-field]:not(ui-radio, ui-checkbox) {
+    @apply grid gap-2;
+}
+
+[data-flux-label] {
+    @apply  !mb-0 !leading-tight;
+}
+
+input:focus[data-flux-control],
+textarea:focus[data-flux-control],
+select:focus[data-flux-control] {
+    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+/* \[:where(&)\]:size-4 {
+    @apply size-4;
+} */
