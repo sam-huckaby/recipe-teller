@@ -8,52 +8,52 @@
 
         <!-- Quick Stats -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-white rounded-lg border border-zinc-200 p-4">
+            <div class="bg-white dark:bg-zinc-700 rounded-lg border border-zinc-200 dark:border-zinc-500 p-4">
                 <div class="flex items-center">
                     <div class="p-2 bg-green-100 rounded-lg">
                         <flux:icon.book-open-text class="size-6 text-green-600" />
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-zinc-600">Total Recipes</p>
-                        <p class="text-2xl font-bold text-zinc-900">{{ auth()->user()->recipes()->count() ?? 0 }}</p>
+                        <p class="text-sm font-medium text-zinc-600 dark:text-zinc-300">Total Recipes</p>
+                        <p class="text-2xl font-bold text-zinc-900 dark:text-zinc-200">{{ auth()->user()->recipes()->count() ?? 0 }}</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="bg-white rounded-lg border border-zinc-200 p-4">
+
+            <div class="bg-white dark:bg-zinc-700 rounded-lg border border-zinc-200 dark:border-zinc-500 p-4">
                 <div class="flex items-center">
                     <div class="p-2 bg-green-100 rounded-lg">
                         <flux:icon.layout-grid class="size-6 text-green-600" />
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-zinc-600">This Week's Meals</p>
-                        <p class="text-2xl font-bold text-zinc-900">{{ auth()->user()->mealPlans()->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])->count() ?? 0 }}</p>
+                        <p class="text-sm font-medium text-zinc-600 dark:text-zinc-300">This Week's Meals</p>
+                        <p class="text-2xl font-bold text-zinc-900 dark:text-zinc-200">{{ auth()->user()->mealPlans()->whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])->count() ?? 0 }}</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="bg-white rounded-lg border border-zinc-200 p-4">
+
+            <div class="bg-white dark:bg-zinc-700 rounded-lg border border-zinc-200 dark:border-zinc-500 p-4">
                 <div class="flex items-center">
                     <div class="p-2 bg-green-100 rounded-lg">
                         <flux:icon.folder-git-2 class="size-6 text-green-600" />
                     </div>
                     <div class="ml-4">
-                        <p class="text-sm font-medium text-zinc-600">Categories</p>
-                        <p class="text-2xl font-bold text-zinc-900">{{ \App\Models\Category::count() }}</p>
+                        <p class="text-sm font-medium text-zinc-600 dark:text-zinc-300">Categories</p>
+                        <p class="text-2xl font-bold text-zinc-900 dark:text-zinc-200">{{ \App\Models\Category::count() }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Meal Planner -->
-        <div class="bg-white rounded-xl border border-zinc-200 p-6">
+        <div class="bg-white dark:bg-zinc-700 rounded-xl border border-zinc-200 dark:border-zinc-500 p-6">
             <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold text-zinc-900">Weekly Meal Planner</h2>
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-zinc-200">Weekly Meal Planner</h2>
                 <flux:button href="/recipes" variant="outline" size="sm">
                     Manage Recipes
                 </flux:button>
             </div>
-            
+
             <livewire:meal-planner />
         </div>
     </div>

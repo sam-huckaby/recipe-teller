@@ -14,7 +14,7 @@
                 <flux:icon.chevron-right class="size-4" />
             </flux:button>
         </div>
-        <h2 class="text-lg font-semibold text-zinc-900">
+        <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
             {{ $selectedWeek->format('M j') }} - {{ $selectedWeek->copy()->endOfWeek()->format('M j, Y') }}
         </h2>
     </div>
@@ -22,7 +22,7 @@
     <!-- Meal Planner Grid -->
     <div class="grid grid-cols-7 gap-4">
         @foreach($mealPlans as $dateString => $dayPlan)
-            <div class="bg-white rounded-lg border border-zinc-200 overflow-hidden">
+            <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden">
                 <!-- Day Header -->
                 <div class="bg-green-500 text-white px-3 py-2 text-center">
                     <div class="font-medium">{{ $dayPlan['date']->format('D') }}</div>
@@ -33,7 +33,7 @@
                 <div class="p-3 space-y-3">
                     <!-- Breakfast -->
                     <div class="meal-slot">
-                        <div class="text-xs font-medium text-zinc-500 mb-1">Breakfast</div>
+                        <div class="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">Breakfast</div>
                         @if($dayPlan['breakfast']->isNotEmpty())
                             @foreach($dayPlan['breakfast'] as $mealPlan)
                                 <div
@@ -48,7 +48,7 @@
                             @endforeach
                         @else
                             <div
-                                class="bg-zinc-50 border-2 border-dashed border-zinc-200 rounded p-2 text-xs text-zinc-400 text-center cursor-pointer hover:bg-zinc-100 transition-colors"
+                                class="bg-zinc-50 dark:bg-zinc-700 border-2 border-dashed border-zinc-200 dark:border-zinc-600 rounded p-2 text-xs text-zinc-400 dark:text-zinc-500 text-center cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-600 transition-colors"
                                 wire:click="openMealModal('{{ $dateString }}', 'breakfast', null)"
                             >
                                 + Add meal
@@ -58,7 +58,7 @@
 
                     <!-- Lunch -->
                     <div class="meal-slot">
-                        <div class="text-xs font-medium text-zinc-500 mb-1">Lunch</div>
+                        <div class="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">Lunch</div>
                         @if($dayPlan['lunch']->isNotEmpty())
                             @foreach($dayPlan['lunch'] as $mealPlan)
                                 <div
@@ -73,7 +73,7 @@
                             @endforeach
                         @else
                             <div
-                                class="bg-zinc-50 border-2 border-dashed border-zinc-200 rounded p-2 text-xs text-zinc-400 text-center cursor-pointer hover:bg-zinc-100 transition-colors"
+                                class="bg-zinc-50 dark:bg-zinc-700 border-2 border-dashed border-zinc-200 dark:border-zinc-600 rounded p-2 text-xs text-zinc-400 dark:text-zinc-500 text-center cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-600 transition-colors"
                                 wire:click="openMealModal('{{ $dateString }}', 'lunch', null)"
                             >
                                 + Add meal
@@ -83,7 +83,7 @@
 
                     <!-- Dinner -->
                     <div class="meal-slot">
-                        <div class="text-xs font-medium text-zinc-500 mb-1">Dinner</div>
+                        <div class="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1">Dinner</div>
                         @if($dayPlan['dinner']->isNotEmpty())
                             @foreach($dayPlan['dinner'] as $mealPlan)
                                 <div
@@ -98,8 +98,8 @@
                             @endforeach
                         @else
                             <div
-                                class="bg-zinc-50 border-2 border-dashed border-zinc-200 rounded p-2 text-xs text-zinc-400 text-center cursor-pointer hover:bg-zinc-100 transition-colors"
-                                wire:click="openMealModal('{{ $dateString }}', 'dinner')"
+                                class="bg-zinc-50 dark:bg-zinc-700 border-2 border-dashed border-zinc-200 dark:border-zinc-600 rounded p-2 text-xs text-zinc-400 dark:text-zinc-500 text-center cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-600 transition-colors"
+                                wire:click="openMealModal('{{ $dateString }}', 'dinner', null)"
                             >
                                 + Add meal
                             </div>
@@ -113,15 +113,12 @@
     <!-- Meal Update Modal -->
     <flux:modal wire:model="showMealModal" class="max-w-2xl">
             <div class="space-y-6">
-                <div class="flex items-center justify-between">
-                    <flux:heading size="lg">
-                        {{ $selectedMealPlan ? 'Update' : 'Add' }} {{ ucfirst($selectedMealType) }}
-                        @if($selectedDate)
-                            - {{ \Carbon\Carbon::parse($selectedDate)->format('M j') }}
-                        @endif
-                    </flux:heading>
-                    <flux:button variant="ghost" icon="x-mark" size="sm" wire:click="closeMealModal"></flux:button>
-                </div>
+                <flux:heading size="lg">
+                    {{ $selectedMealPlan ? 'Update' : 'Add' }} {{ ucfirst($selectedMealType) }}
+                    @if($selectedDate)
+                        - {{ \Carbon\Carbon::parse($selectedDate)->format('M j') }}
+                    @endif
+                </flux:heading>
 
                 <!-- Search Bar -->
                 <div>
@@ -137,15 +134,15 @@
                     @if($availableRecipes->count() > 0)
                         @foreach($availableRecipes as $recipe)
                             <div
-                                class="flex items-center justify-between p-3 bg-white border border-zinc-200 rounded-lg hover:bg-zinc-50 cursor-pointer transition-colors"
+                                class="flex items-center justify-between p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-700 cursor-pointer transition-colors"
                                 wire:click="assignRecipe({{ $recipe->id }})"
                             >
                                 <div class="flex-1">
-                                    <div class="font-medium text-zinc-900">{{ $recipe->name }}</div>
+                                    <div class="font-medium text-zinc-900 dark:text-zinc-100">{{ $recipe->name }}</div>
                                     @if($recipe->description)
-                                        <div class="text-sm text-zinc-500 mt-1">{{ Str::limit($recipe->description, 100) }}</div>
+                                        <div class="text-sm text-zinc-500 dark:text-zinc-400 mt-1">{{ Str::limit($recipe->description, 100) }}</div>
                                     @endif
-                                    <div class="flex items-center space-x-4 mt-2 text-xs text-zinc-400">
+                                    <div class="flex items-center space-x-4 mt-2 text-xs text-zinc-400 dark:text-zinc-500">
                                         @if($recipe->total_time)
                                             <span>{{ $recipe->total_time }}min</span>
                                         @endif
@@ -161,11 +158,11 @@
                         @endforeach
                     @else
                         <div class="text-center py-8">
-                            <div class="text-zinc-500 mb-2">No recipes found</div>
+                            <div class="text-zinc-500 dark:text-zinc-400 mb-2">No recipes found</div>
                             @if($recipeSearch)
-                                <div class="text-sm text-zinc-400">Try adjusting your search terms</div>
+                                <div class="text-sm text-zinc-400 dark:text-zinc-500">Try adjusting your search terms</div>
                             @else
-                                <div class="text-sm text-zinc-400">You don't have any recipes yet</div>
+                                <div class="text-sm text-zinc-400 dark:text-zinc-500">You don't have any recipes yet</div>
                                 <flux:button variant="primary" size="sm" wire:navigate href="{{ route('recipes.add') }}" class="mt-3">
                                     Add Your First Recipe
                                 </flux:button>
@@ -175,7 +172,7 @@
                 </div>
 
                 <!-- Actions -->
-                <div class="flex justify-between pt-4 border-t border-zinc-200">
+                <div class="flex justify-between pt-4 border-t border-zinc-200 dark:border-zinc-700">
                     <div>
                         @if($selectedMealPlan)
                             <flux:button variant="danger" wire:click="removeMeal">
@@ -184,7 +181,9 @@
                         @endif
                     </div>
                     <div class="flex space-x-3">
-                        <flux:button variant="ghost" wire:click="closeMealModal">Cancel</flux:button>
+                        <flux:modal.close>
+                            <flux:button variant="ghost">Cancel</flux:button>
+                        </flux:modal.close>
                     </div>
                 </div>
             </div>

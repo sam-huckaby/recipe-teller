@@ -40,7 +40,12 @@ class MealPlanner extends Component
             ->where('user_id', auth()->id())
             ->whereBetween('date', [$startDate, $endDate])
             ->get()
-            ->groupBy(['date', 'meal_type']);
+            ->groupBy(function ($mealPlan) {
+                return $mealPlan->date->toDateString();
+            })
+            ->map(function ($dayPlans) {
+                return $dayPlans->groupBy('meal_type');
+            });
 
         $this->mealPlans = [];
 
@@ -50,9 +55,9 @@ class MealPlanner extends Component
 
             $this->mealPlans[$dateString] = [
                 'date' => $date,
-                'breakfast' => $mealPlans[$dateString]['breakfast'] ?? collect(),
-                'lunch' => $mealPlans[$dateString]['lunch'] ?? collect(),
-                'dinner' => $mealPlans[$dateString]['dinner'] ?? collect(),
+                'breakfast' => $mealPlans->get($dateString, collect())->get('breakfast', collect()),
+                'lunch' => $mealPlans->get($dateString, collect())->get('lunch', collect()),
+                'dinner' => $mealPlans->get($dateString, collect())->get('dinner', collect()),
             ];
         }
     }

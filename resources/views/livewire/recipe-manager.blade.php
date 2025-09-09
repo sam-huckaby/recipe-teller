@@ -2,8 +2,8 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-zinc-900">My Recipes</h1>
-            <p class="text-zinc-600">Manage your personal recipe collection</p>
+            <h1 class="dark:text-zinc-300 text-2xl font-bold text-zinc-900">My Recipes</h1>
+            <p class="dark:text-zinc-400 text-zinc-600">Manage your personal recipe collection</p>
         </div>
         <flux:button variant="primary" wire:navigate href="{{ route('recipes.add') }}">
             <flux:icon.plus class="size-4" />
@@ -13,9 +13,9 @@
 
     <!-- Search -->
     <div class="max-w-md">
-        <flux:input 
-            wire:model.live.debounce.300ms="search" 
-            placeholder="Search recipes..." 
+        <flux:input
+            wire:model.live.debounce.300ms="search"
+            placeholder="Search recipes..."
             type="search"
         />
     </div>
@@ -39,7 +39,7 @@
                         <!-- Recipe Content -->
                         <div class="p-4">
                             <h3 class="font-semibold text-zinc-900 mb-2">{{ $recipe->name }}</h3>
-                            
+
                             @if($recipe->description)
                                 <p class="text-sm text-zinc-600 mb-3 line-clamp-2">{{ $recipe->description }}</p>
                             @endif
