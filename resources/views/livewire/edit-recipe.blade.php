@@ -103,6 +103,28 @@
                         <flux:error name="description" />
                     </flux:field>
                 </div>
+
+                <!-- Categories -->
+                <div class="md:col-span-2">
+                    <flux:field>
+                        <flux:label>Categories (Optional)</flux:label>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-2">
+                            @foreach($availableCategories as $category)
+                                <label class="flex items-center space-x-2 p-2 rounded-md border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        wire:model="selectedCategories"
+                                        value="{{ $category->id }}"
+                                        class="rounded border-zinc-300 text-green-600 focus:border-green-500 focus:ring-green-500 dark:border-zinc-600 dark:bg-zinc-700"
+                                    />
+                                    <span class="text-sm text-zinc-700 dark:text-zinc-300">{{ $category->name }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <flux:error name="selectedCategories" />
+                        <flux:description>Select one or more categories that describe this recipe</flux:description>
+                    </flux:field>
+                </div>
             </div>
         </div>
 
@@ -110,8 +132,7 @@
         <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Ingredients</h2>
-                <flux:button type="button" variant="ghost" size="sm" wire:click="addIngredient">
-                    <flux:icon.plus class="size-4" />
+                <flux:button icon="plus" type="button" variant="ghost" size="sm" wire:click="addIngredient">
                     Add Ingredient
                 </flux:button>
             </div>
@@ -159,8 +180,7 @@
         <div class="bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-6">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Instructions</h2>
-                <flux:button type="button" variant="ghost" size="sm" wire:click="addInstruction">
-                    <flux:icon.plus class="size-4" />
+                <flux:button icon="plus" type="button" variant="ghost" size="sm" wire:click="addInstruction">
                     Add Step
                 </flux:button>
             </div>
@@ -203,8 +223,7 @@
             <flux:button variant="ghost" wire:navigate href="{{ route('recipes.view', $recipe) }}">
                 Cancel
             </flux:button>
-            <flux:button type="submit" variant="primary">
-                <flux:icon.check class="size-4" />
+            <flux:button icon="check" type="submit" variant="primary">
                 Update Recipe
             </flux:button>
         </div>

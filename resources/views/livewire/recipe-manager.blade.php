@@ -11,13 +11,109 @@
         </flux:button>
     </div>
 
-    <!-- Search -->
-    <div class="max-w-md">
-        <flux:input
-            wire:model.live.debounce.300ms="search"
-            placeholder="Search recipes..."
-            type="search"
-        />
+    <!-- Search and Filters -->
+    <div class="flex flex-col sm:flex-row gap-4 max-w-2xl">
+        <!-- Text Search -->
+        <div class="flex-1 max-w-md">
+            <flux:input
+                wire:model.live.debounce.300ms="search"
+                placeholder="Search recipes..."
+                type="search"
+            />
+        </div>
+
+        <!-- Category Filter -->
+        <div class="relative" x-data="{ open: false, selectCategory(categoryId) { $wire.toggleCategory(categoryId); } }">
+            <!-- Category Filter Button -->
+            <flux:button
+                variant="outline"
+                @click="open = !open"
+                icon="adjustments-horizontal"
+                icon:trailing="chevrons-up-down"
+                class="flex items-center gap-2 min-w-fit"
+            >
+                Categories
+                @if(count($selectedCategories) > 0)
+                    <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
+                        {{ count($selectedCategories) }}
+                    </span>
+                @endif
+            </flux:button>
+
+            <!-- Category Dropdown -->
+            <div
+                x-show="open"
+                x-transition
+                @click.away="open = false"
+                class="absolute top-full mt-2 w-72 bg-white dark:bg-zinc-600 rounded-lg border border-zinc-200 shadow-lg z-50"
+            >
+                <div class="p-3">
+                    <!-- Search within categories -->
+                    <flux:input
+                        wire:model.live.debounce.200ms="categorySearch"
+                        placeholder="Search categories..."
+                        class="mb-3 border-zinc-400"
+                    />
+
+                    <!-- Selected Categories -->
+                    @if(count($selectedCategories) > 0)
+                        <div class="mb-3 pb-3 border-b border-zinc-200">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-zinc-700">Selected:</span>
+                                <flux:button
+                                    variant="ghost"
+                                    size="sm"
+                                    wire:click.stop="clearCategories"
+                                    class="text-xs"
+                                >
+                                    Clear all
+                                </flux:button>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($selectedCategoryModels as $category)
+                                    <div class="flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-zinc-100">
+                                        <div
+                                            class="w-2 h-2 rounded-full flex-shrink-0"
+                                            style="background-color: {{ $category->color }}"
+                                        ></div>
+                                        <span>{{ $category->name }}</span>
+                                        <button
+                                            wire:click.stop="toggleCategory({{ $category->id }})"
+                                            class="text-zinc-500 hover:text-zinc-700 ml-1"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Available Categories -->
+                    <div class="max-h-64 overflow-y-auto">
+                        @forelse($filteredCategories as $category)
+                            <div
+                                wire:click.stop="toggleCategory({{ $category->id }})"
+                                class="flex items-center gap-3 p-2 rounded-md hover:bg-zinc-50 dark:hover:bg-zinc-400 cursor-pointer {{ in_array($category->id, $selectedCategories) ? 'bg-zinc-50' : '' }}"
+                            >
+                                <div
+                                    class="w-4 h-4 rounded-full flex-shrink-0"
+                                    style="background-color: {{ $category->color }}"
+                                ></div>
+                                <span class="text-sm">{{ $category->name }}</span>
+                                @if(in_array($category->id, $selectedCategories))
+                                    <flux:icon.check class="size-4 text-green-600 ml-auto" />
+                                @endif
+                            </div>
+                        @empty
+                            <div class="text-sm text-zinc-500 text-center py-4">
+                                No categories found
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Recipes Grid -->
@@ -53,6 +149,19 @@
                                     <span>{{ $recipe->servings }} servings</span>
                                 </div>
                             </div>
+
+                            <!-- Category Dots -->
+                            @if($recipe->categories->count() > 0)
+                                <div class="flex items-center gap-1 mb-3">
+                                    @foreach($recipe->categories as $category)
+                                        <div
+                                            class="w-3 h-3 rounded-full flex-shrink-0 cursor-help"
+                                            style="background-color: {{ $category->color }}"
+                                            title="{{ $category->name }}"
+                                        ></div>
+                                    @endforeach
+                                </div>
+                            @endif
 
                             <!-- Tags -->
                             @if($recipe->tags && count($recipe->tags) > 0)

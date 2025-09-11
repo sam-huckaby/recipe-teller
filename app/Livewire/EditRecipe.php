@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Category;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Services\OpenAIService;
@@ -33,9 +34,14 @@ class EditRecipe extends Component
     #[Validate('required|integer|min:1')]
     public $servings = null;
 
+    #[Validate('nullable|array')]
+    public $selectedCategories = [];
+
     public $ingredients = [];
 
     public $instructions = [];
+
+    public $availableCategories = [];
 
     public function mount(Recipe $recipe)
     {
@@ -52,6 +58,8 @@ class EditRecipe extends Component
         $this->servings = $recipe->servings;
         $this->ingredients = $recipe->ingredients ?: [['name' => '', 'quantity' => '']];
         $this->instructions = $recipe->instructions ?: [''];
+        $this->availableCategories = Category::orderBy('name')->get();
+        $this->selectedCategories = $recipe->categories->pluck('id')->toArray();
     }
 
     public function addIngredient()
@@ -231,6 +239,8 @@ class EditRecipe extends Component
             'ingredients' => array_values($filteredIngredients),
             'instructions' => array_values($filteredInstructions),
         ]);
+
+        $this->recipe->categories()->sync($this->selectedCategories);
 
         foreach ($filteredIngredients as $ingredient) {
             Ingredient::firstOrCreate([

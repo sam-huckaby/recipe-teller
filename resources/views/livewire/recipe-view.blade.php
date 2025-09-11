@@ -20,19 +20,19 @@
                     @endforeach
                 </flux:select>
             </div>
-            
-            <flux:button variant="ghost" size="sm" wire:navigate href="{{ route('recipes.edit', $recipe) }}">
-                <flux:icon.pencil class="size-4" />
+
+            <flux:button icon="pencil" variant="ghost" size="sm" wire:navigate href="{{ route('recipes.edit', $recipe) }}">
                 Edit
             </flux:button>
-            <flux:button 
-                variant="ghost" 
-                size="sm" 
-                class="text-red-600 hover:text-red-700"
+            <flux:button
+                variant="ghost"
+                class="cursor-pointer"
+                icon="trash"
+                size="sm"
+                class="text-red-600 hover:text-red-700 flex justify-start items-center"
                 wire:click="delete"
                 wire:confirm="Are you sure you want to delete this recipe? This action cannot be undone."
             >
-                <flux:icon.trash class="size-4" />
                 Delete
             </flux:button>
         </div>
@@ -52,7 +52,31 @@
             <div class="mb-6">
                 <h1 class="text-3xl font-bold text-zinc-900 mb-2">{{ $this->getCurrentData()->name }}</h1>
                 @if($this->getCurrentData()->description)
-                    <p class="text-zinc-600">{{ $this->getCurrentData()->description }}</p>
+                    <p class="text-zinc-600 mb-4">{{ $this->getCurrentData()->description }}</p>
+                @endif
+                
+                <!-- Categories -->
+                @php
+                    $currentCategories = $this->selectedVersion 
+                        ? collect($this->selectedVersion->categories ?? [])
+                        : $recipe->categories;
+                @endphp
+                @if($currentCategories && count($currentCategories) > 0)
+                    <div class="flex flex-wrap gap-2">
+                        @if($this->selectedVersion)
+                            @foreach($currentCategories as $categoryName)
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                    {{ $categoryName }}
+                                </span>
+                            @endforeach
+                        @else
+                            @foreach($currentCategories as $category)
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                    {{ $category->name }}
+                                </span>
+                            @endforeach
+                        @endif
+                    </div>
                 @endif
             </div>
 

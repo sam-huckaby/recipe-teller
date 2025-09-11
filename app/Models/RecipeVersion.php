@@ -20,12 +20,14 @@ class RecipeVersion extends Model
         'servings',
         'image_url',
         'tags',
+        'categories',
     ];
 
     protected $casts = [
         'ingredients' => 'array',
         'instructions' => 'array',
         'tags' => 'array',
+        'categories' => 'array',
     ];
 
     public function recipe(): BelongsTo

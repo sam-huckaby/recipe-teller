@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\AddRecipe;
+use App\Livewire\CategoryManager;
 use App\Livewire\EditRecipe;
 use App\Livewire\RecipeManager;
 use App\Livewire\RecipeView;
@@ -22,6 +23,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('recipes/add', AddRecipe::class)->name('recipes.add');
     Route::get('recipes/{recipe}', RecipeView::class)->name('recipes.view');
     Route::get('recipes/{recipe}/edit', EditRecipe::class)->name('recipes.edit');
+
+    Route::get('categories', CategoryManager::class)->name('categories');
 
     Route::redirect('settings', 'settings/profile');
 

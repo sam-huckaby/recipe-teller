@@ -22,7 +22,7 @@ class RecipeView extends Component
             abort(403);
         }
 
-        $this->recipe = $recipe;
+        $this->recipe = $recipe->load('categories');
 
         if ($version) {
             $this->selectedVersion = $recipe->versions()->where('id', $version)->first();

@@ -2,16 +2,14 @@
     <!-- Week Navigation -->
     <div class="flex items-center justify-between">
         <div class="flex items-center space-x-4">
-            <flux:button wire:click="previousWeek" variant="ghost" size="sm">
-                <flux:icon.chevron-left class="size-4" />
+            <flux:button icon="chevron-left" wire:click="previousWeek" variant="ghost" size="sm">
                 Previous
             </flux:button>
             <flux:button wire:click="currentWeek" variant="outline" size="sm">
                 This Week
             </flux:button>
-            <flux:button wire:click="nextWeek" variant="ghost" size="sm">
+            <flux:button icon:trailing="chevron-right" wire:click="nextWeek" variant="ghost" size="sm">
                 Next
-                <flux:icon.chevron-right class="size-4" />
             </flux:button>
         </div>
         <h2 class="text-lg font-semibold text-zinc-900 dark:text-zinc-100">

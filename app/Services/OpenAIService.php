@@ -72,6 +72,13 @@ class OpenAIService
             }
 
             $recipeJson = $data['choices'][0]['message']['content'];
+
+            // Strip markdown code block formatting if present, but handle plain JSON too
+            $recipeJson = trim($recipeJson);
+            if (preg_match('/```(?:json)?\s*(.*?)\s*```/s', $recipeJson, $matches)) {
+                $recipeJson = trim($matches[1]);
+            }
+
             $recipeData = json_decode($recipeJson, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {

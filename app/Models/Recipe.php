@@ -70,6 +70,7 @@ class Recipe extends Model
             'servings' => $this->servings,
             'image_url' => $this->image_url,
             'tags' => $this->tags,
+            'categories' => $this->categories->pluck('name')->toArray(),
         ]);
     }
 
