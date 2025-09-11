@@ -34,6 +34,9 @@ class EditRecipe extends Component
     #[Validate('required|integer|min:1')]
     public $servings = null;
 
+    #[Validate('nullable|url')]
+    public $image_url = '';
+
     #[Validate('nullable|array')]
     public $selectedCategories = [];
 
@@ -56,6 +59,7 @@ class EditRecipe extends Component
         $this->prep_time = $recipe->prep_time;
         $this->cook_time = $recipe->cook_time;
         $this->servings = $recipe->servings;
+        $this->image_url = $recipe->image_url;
         $this->ingredients = $recipe->ingredients ?: [['name' => '', 'quantity' => '']];
         $this->instructions = $recipe->instructions ?: [''];
         $this->availableCategories = Category::orderBy('name')->get();
@@ -140,7 +144,8 @@ class EditRecipe extends Component
             $openAIService = new OpenAIService;
             $recipeResult = $openAIService->extractRecipeFromContent(
                 $webpageResult['content'],
-                $this->url
+                $this->url,
+                $webpageResult['images'] ?? []
             );
 
             if (! $recipeResult['success']) {
@@ -192,6 +197,10 @@ class EditRecipe extends Component
             $this->servings = $recipe['servings'];
         }
 
+        if (! empty($recipe['image_url'])) {
+            $this->image_url = $recipe['image_url'];
+        }
+
         // Replace ingredients if we have better data
         if (! empty($recipe['ingredients'])) {
             $this->ingredients = $recipe['ingredients'];
@@ -236,6 +245,7 @@ class EditRecipe extends Component
             'prep_time' => $this->prep_time,
             'cook_time' => $this->cook_time,
             'servings' => $this->servings,
+            'image_url' => $this->image_url ?: null,
             'ingredients' => array_values($filteredIngredients),
             'instructions' => array_values($filteredInstructions),
         ]);

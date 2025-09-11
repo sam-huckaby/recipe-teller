@@ -32,6 +32,9 @@ class AddRecipe extends Component
     #[Validate('required|integer|min:1')]
     public $servings = null;
 
+    #[Validate('nullable|url')]
+    public $image_url = '';
+
     #[Validate('nullable|array')]
     public $selectedCategories = [];
 
@@ -128,7 +131,8 @@ class AddRecipe extends Component
             $openAIService = new OpenAIService;
             $recipeResult = $openAIService->extractRecipeFromContent(
                 $webpageResult['content'],
-                $this->url
+                $this->url,
+                $webpageResult['images'] ?? []
             );
 
             if (! $recipeResult['success']) {
@@ -180,6 +184,10 @@ class AddRecipe extends Component
             $this->servings = $recipe['servings'];
         }
 
+        if (empty($this->image_url) && ! empty($recipe['image_url'])) {
+            $this->image_url = $recipe['image_url'];
+        }
+
         // Replace ingredients if we have better data
         if (! empty($recipe['ingredients'])) {
             $this->ingredients = $recipe['ingredients'];
@@ -223,6 +231,7 @@ class AddRecipe extends Component
             'prep_time' => $this->prep_time,
             'cook_time' => $this->cook_time,
             'servings' => $this->servings,
+            'image_url' => $this->image_url ?: null,
             'ingredients' => array_values($filteredIngredients),
             'instructions' => array_values($filteredInstructions),
         ]);

@@ -26,6 +26,7 @@ test('can create a recipe with all fields', function () {
         ->set('prep_time', 15)
         ->set('cook_time', 30)
         ->set('servings', 4)
+        ->set('image_url', 'https://example.com/recipe-image.jpg')
         ->set('ingredients', [
             ['name' => 'Flour', 'quantity' => '2 cups'],
             ['name' => 'Sugar', 'quantity' => '1 cup'],
@@ -44,6 +45,7 @@ test('can create a recipe with all fields', function () {
         'prep_time' => 15,
         'cook_time' => 30,
         'servings' => 4,
+        'image_url' => 'https://example.com/recipe-image.jpg',
         'user_id' => $this->user->id,
     ]);
 
@@ -90,6 +92,13 @@ test('validates url format', function () {
         ->set('url', 'not-a-valid-url')
         ->call('save')
         ->assertHasErrors(['url']);
+});
+
+test('validates image url format', function () {
+    Livewire::test(AddRecipe::class)
+        ->set('image_url', 'not-a-valid-url')
+        ->call('save')
+        ->assertHasErrors(['image_url']);
 });
 
 test('requires at least one ingredient', function () {

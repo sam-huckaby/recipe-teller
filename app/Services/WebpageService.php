@@ -36,9 +36,13 @@ class WebpageService
                 ];
             }
 
+            // Extract potential recipe images from HTML
+            $imageUrls = $this->extractImageUrls($content, $url);
+
             return [
                 'success' => true,
                 'content' => $textContent,
+                'images' => $imageUrls,
                 'url' => $url,
             ];
 
@@ -84,5 +88,86 @@ class WebpageService
         }
 
         return $text;
+    }
+
+    private function extractImageUrls(string $html, string $baseUrl): array
+    {
+        $imageUrls = [];
+
+        // Use DOMDocument to parse HTML and find images
+        $dom = new \DOMDocument;
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($html);
+        libxml_clear_errors();
+
+        $images = $dom->getElementsByTagName('img');
+
+        foreach ($images as $img) {
+            $src = $img->getAttribute('src');
+            if (empty($src)) {
+                continue;
+            }
+
+            // Convert relative URLs to absolute
+            if (strpos($src, 'http') !== 0) {
+                $src = $this->resolveUrl($src, $baseUrl);
+            }
+
+            // Skip data URLs and SVGs
+            if (strpos($src, 'data:') === 0 || strpos($src, '.svg') !== false) {
+                continue;
+            }
+
+            // Check for recipe-related images based on alt text or class names
+            $alt = $img->getAttribute('alt');
+            $class = $img->getAttribute('class');
+
+            // Prioritize images that seem recipe-related
+            $isRecipeImage = $this->isLikelyRecipeImage($alt, $class, $src);
+
+            $imageUrls[] = [
+                'url' => $src,
+                'alt' => $alt,
+                'class' => $class,
+                'is_recipe_related' => $isRecipeImage,
+            ];
+        }
+
+        // Sort by recipe relevance
+        usort($imageUrls, function ($a, $b) {
+            return $b['is_recipe_related'] <=> $a['is_recipe_related'];
+        });
+
+        return array_slice($imageUrls, 0, 5); // Return top 5 images
+    }
+
+    private function isLikelyRecipeImage(string $alt, string $class, string $src): bool
+    {
+        $recipeKeywords = ['recipe', 'dish', 'food', 'cooking', 'meal', 'ingredient'];
+
+        $searchText = strtolower($alt.' '.$class.' '.$src);
+
+        foreach ($recipeKeywords as $keyword) {
+            if (strpos($searchText, $keyword) !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function resolveUrl(string $relativeUrl, string $baseUrl): string
+    {
+        if (strpos($relativeUrl, '//') === 0) {
+            return 'https:'.$relativeUrl;
+        }
+
+        if (strpos($relativeUrl, '/') === 0) {
+            $parsedBase = parse_url($baseUrl);
+
+            return $parsedBase['scheme'].'://'.$parsedBase['host'].$relativeUrl;
+        }
+
+        return rtrim($baseUrl, '/').'/'.ltrim($relativeUrl, '/');
     }
 }

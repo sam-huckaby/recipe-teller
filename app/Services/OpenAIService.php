@@ -17,7 +17,7 @@ class OpenAIService
         $this->apiKey = config('services.openai.api_key') ?? env('OPENAI_API_KEY');
     }
 
-    public function extractRecipeFromContent(string $content, string $url): array
+    public function extractRecipeFromContent(string $content, string $url, array $images = []): array
     {
         if (empty($this->apiKey) || $this->apiKey === 'sk-dummy-key-replace-with-real-key') {
             return [
@@ -27,7 +27,7 @@ class OpenAIService
         }
 
         try {
-            $prompt = $this->buildRecipeExtractionPrompt($content, $url);
+            $prompt = $this->buildRecipeExtractionPrompt($content, $url, $images);
 
             $response = Http::timeout(60)
                 ->withHeaders([
@@ -97,7 +97,6 @@ class OpenAIService
                 'success' => true,
                 'recipe' => $this->normalizeRecipeData($recipeData),
             ];
-
         } catch (RequestException $e) {
             Log::error('OpenAI API request exception', [
                 'error' => $e->getMessage(),
@@ -119,8 +118,17 @@ class OpenAIService
         }
     }
 
-    private function buildRecipeExtractionPrompt(string $content, string $url): string
+    private function buildRecipeExtractionPrompt(string $content, string $url, array $images = []): string
     {
+        $imageInfo = '';
+        if (! empty($images)) {
+            $imageInfo = "\n\nAvailable images found on the page:\n";
+            foreach (array_slice($images, 0, 3) as $index => $image) {
+                $imageInfo .= ($index + 1).'. '.$image['url']." (alt: '".($image['alt'] ?: 'none')."')\n";
+            }
+            $imageInfo .= "\nChoose the most appropriate image URL for the recipe from the list above, or set to null if none are suitable.";
+        }
+
         return "Extract recipe information from the following webpage content and return it as JSON with this exact structure:
 
 {
@@ -129,6 +137,7 @@ class OpenAIService
   \"prep_time\": 15,
   \"cook_time\": 30,
   \"servings\": 4,
+  \"image_url\": \"https://example.com/recipe-image.jpg\",
   \"ingredients\": [
     {\"name\": \"ingredient name\", \"quantity\": \"1 cup\"},
     {\"name\": \"another ingredient\", \"quantity\": \"2 tbsp\"}
@@ -142,12 +151,14 @@ class OpenAIService
 Rules:
 - Times should be in minutes as integers (null if not found)
 - Servings should be an integer (null if not found)
+- image_url should be the main recipe image URL from the page (null if not found)
 - Include all ingredients with their quantities
 - Include all cooking steps in order
 - If no recipe is found, return: {\"error\": \"No recipe found on this page\"}
 - Return only valid JSON, no additional text
 
 Webpage URL: {$url}
+{$imageInfo}
 
 Webpage Content:
 {$content}";
@@ -167,6 +178,7 @@ Webpage Content:
             'prep_time' => is_numeric($data['prep_time'] ?? null) ? (int) $data['prep_time'] : null,
             'cook_time' => is_numeric($data['cook_time'] ?? null) ? (int) $data['cook_time'] : null,
             'servings' => is_numeric($data['servings'] ?? null) ? (int) $data['servings'] : null,
+            'image_url' => $this->normalizeImageUrl($data['image_url'] ?? null),
             'ingredients' => $this->normalizeIngredients($data['ingredients'] ?? []),
             'instructions' => $this->normalizeInstructions($data['instructions'] ?? []),
         ];
@@ -205,5 +217,30 @@ Webpage Content:
         }
 
         return $normalized;
+    }
+
+    private function normalizeImageUrl(?string $imageUrl): ?string
+    {
+        if (empty($imageUrl)) {
+            return null;
+        }
+
+        $imageUrl = trim($imageUrl);
+
+        // Validate URL format
+        if (! filter_var($imageUrl, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        // Basic check for image file extensions (optional)
+        $validExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+        $extension = strtolower(pathinfo(parse_url($imageUrl, PHP_URL_PATH), PATHINFO_EXTENSION));
+
+        // If no extension or valid extension, return the URL
+        if (empty($extension) || in_array($extension, $validExtensions)) {
+            return $imageUrl;
+        }
+
+        return null;
     }
 }

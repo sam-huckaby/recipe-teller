@@ -104,6 +104,16 @@
                     </flux:field>
                 </div>
 
+                <!-- Image URL -->
+                <div class="md:col-span-2">
+                    <flux:field>
+                        <flux:label>Image URL (Optional)</flux:label>
+                        <flux:input wire:model="image_url" type="url" placeholder="https://example.com/recipe-image.jpg" />
+                        <flux:error name="image_url" />
+                        <flux:description>URL of the recipe image (usually filled automatically when retrieving from URL)</flux:description>
+                    </flux:field>
+                </div>
+
                 <!-- Categories -->
                 <div class="md:col-span-2">
                     <flux:field>
