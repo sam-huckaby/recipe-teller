@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Category;
 use App\Models\Recipe;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,9 +16,20 @@ class RecipeManager extends Component
 
     public $search = '';
 
+    #[Url(as: 'category')]
     public $selectedCategories = [];
 
     public $categorySearch = '';
+
+    public function mount()
+    {
+        if (request()->has('category')) {
+            $categoryId = (int) request()->get('category');
+            if (Category::find($categoryId)) {
+                $this->selectedCategories = [$categoryId];
+            }
+        }
+    }
 
     public function updatingSearch()
     {

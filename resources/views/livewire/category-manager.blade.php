@@ -20,7 +20,8 @@
         <!-- Categories Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @forelse($categories as $category)
-                <div class="bg-white dark:bg-zinc-700 rounded-lg border border-zinc-200 dark:border-zinc-500 p-4">
+                <div class="bg-white dark:bg-zinc-700 rounded-lg border border-zinc-200 dark:border-zinc-500 p-4 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-400 transition-all duration-200 cursor-pointer group"
+                     wire:click="viewCategoryRecipes({{ $category->id }})">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-3">
                             <div
@@ -28,21 +29,21 @@
                                 style="background-color: {{ $category->color }}"
                             ></div>
                             <div>
-                                <h3 class="font-medium text-zinc-900 dark:text-zinc-100">{{ $category->name }}</h3>
+                                <h3 class="font-medium text-zinc-900 dark:text-zinc-100 group-hover:text-green-700 dark:group-hover:text-green-300 transition-colors">{{ $category->name }}</h3>
                                 <p class="text-sm text-zinc-500 dark:text-zinc-400">
                                     {{ $category->recipes_count }} {{ Str::plural('recipe', $category->recipes_count) }}
                                 </p>
                             </div>
                         </div>
                         <flux:dropdown position="bottom" align="end">
-                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" />
+                            <flux:button variant="ghost" size="sm" icon="ellipsis-horizontal" wire:click.stop />
                             <flux:menu class="w-32">
-                                <flux:menu.item wire:click="openEditModal({{ $category->id }})" icon="pencil">
+                                <flux:menu.item wire:click.stop="openEditModal({{ $category->id }})" icon="pencil">
                                     Edit
                                 </flux:menu.item>
                                 <flux:menu.separator />
                                 <flux:menu.item
-                                    wire:click="openDeleteModal({{ $category->id }})"
+                                    wire:click.stop="openDeleteModal({{ $category->id }})"
                                     icon="trash"
                                     variant="danger"
                                 >

@@ -7,7 +7,7 @@
         <flux:sidebar stashable class="fixed left-0 top-0 h-screen w-64 border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 z-40">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <a href="{{ route('dashboard') }}" class="flex items-center" wire:navigate>
                 <x-app-logo />
             </a>
 
@@ -15,7 +15,7 @@
                 <flux:navlist.group :heading="__('Meal Planning')" class="grid">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Meal Planner') }}</flux:navlist.item>
                     <flux:navlist.item icon="book-open-text" :href="route('recipes')" :current="request()->routeIs('recipes')" wire:navigate>{{ __('My Recipes') }}</flux:navlist.item>
-                    <flux:navlist.item icon="folder-git-2" :href="route('categories')" :current="request()->routeIs('categories')" wire:navigate>{{ __('Categories') }}</flux:navlist.item>
+                    <flux:navlist.item icon="tag" :href="route('categories')" :current="request()->routeIs('categories')" wire:navigate>{{ __('Categories') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 

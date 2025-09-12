@@ -121,6 +121,11 @@ class CategoryManager extends Component
         session()->flash('message', 'Category deleted successfully!');
     }
 
+    public function viewCategoryRecipes($categoryId)
+    {
+        return $this->redirect(route('recipes', ['category' => $categoryId]), navigate: true);
+    }
+
     public function render()
     {
         return view('livewire.category-manager')

@@ -28,7 +28,7 @@
             <flux:button
                 variant="outline"
                 @click="open = !open"
-                icon="adjustments-horizontal"
+                icon="tag"
                 icon:trailing="chevrons-up-down"
                 class="flex items-center gap-2 min-w-fit"
             >
