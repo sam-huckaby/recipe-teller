@@ -14,6 +14,7 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Meal Planning')" class="grid">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Meal Planner') }}</flux:navlist.item>
+                    <flux:navlist.item icon="list-bullet" :href="route('shopping')" :current="request()->routeIs('shopping')" wire:navigate>{{ __('Shopping') }}</flux:navlist.item>
                     <flux:navlist.item icon="book-open-text" :href="route('recipes')" :current="request()->routeIs('recipes')" wire:navigate>{{ __('My Recipes') }}</flux:navlist.item>
                     <flux:navlist.item icon="tag" :href="route('categories')" :current="request()->routeIs('categories')" wire:navigate>{{ __('Categories') }}</flux:navlist.item>
                 </flux:navlist.group>

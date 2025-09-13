@@ -8,6 +8,7 @@ use App\Livewire\RecipeView;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
+use App\Livewire\Shopping;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('recipes/{recipe}/edit', EditRecipe::class)->name('recipes.edit');
 
     Route::get('categories', CategoryManager::class)->name('categories');
+    Route::get('shopping', Shopping::class)->name('shopping');
 
     Route::redirect('settings', 'settings/profile');
 
